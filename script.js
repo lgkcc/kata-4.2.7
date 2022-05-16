@@ -43,14 +43,18 @@ function updateValue() {
         getRepo(input.value)
             .then(posts => posts.items)
             .then(items => {
-                if (items.length > 5) {
-                    items.length = 5
+                if (items === undefined) {
+
+                }else{
+                    if (items.length > 5) {
+                        items.length = 5
+                        return items
+                    }
                     return items
                 }
-                return items
             })
             .then(filterItems => updateDropDown(filterItems))
-            .catch(err => console.log(err))
+            .catch(err => err)
     }
 }
 
