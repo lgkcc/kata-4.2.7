@@ -7,7 +7,7 @@ input.addEventListener('input', debounce())
 function getRepo(name) {
     return Promise.resolve()
         .then(() => {
-            return fetch(`https://api.github.com/search/repositories?q=${name}`)
+            return fetch(`https://api.github.com/search/repositories?q=${name}&per_page=5`)
                 .then(response => response.json())
         })
 }
@@ -46,10 +46,6 @@ function updateValue() {
                 if (items === undefined) {
 
                 }else{
-                    if (items.length > 5) {
-                        items.length = 5
-                        return items
-                    }
                     return items
                 }
             })
@@ -81,6 +77,13 @@ function createEl(name, owner, stars) {
     item.insertAdjacentHTML('afterbegin', `<span>Name: ${name}</span>`)
     item.insertAdjacentHTML('beforeend', `<span>Owner: ${owner}</span>`)
     item.insertAdjacentHTML('beforeend', `<span>Stars: ${stars}</span>`)
+    const btn = document.createElement('button')
+    btn.textContent = 'Удалить'
+    btn.addEventListener('click', () => item.remove())
+
+    item.insertAdjacentElement('beforeend', btn)
+
+
     item.classList.add('main__item-list')
     list.insertAdjacentElement("afterbegin", item)
 }
