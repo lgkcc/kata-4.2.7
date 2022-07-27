@@ -6,9 +6,11 @@ input.addEventListener('input', debounce())
 /* Запрос к GitHub API */
 function getRepo(name) {
     return Promise.resolve()
-        .then(() => {
+        .then(function () {
             return fetch(`https://api.github.com/search/repositories?q=${name}&per_page=5`)
-                .then(response => response.json())
+                .then(function(response){
+                    return response.json()
+                })
         })
 }
 
@@ -19,13 +21,13 @@ function debounce() {
     function deb() {
         if (flag) {
             clearTimeout(timeoutId)
-            timeoutId = setTimeout(() => {
+            timeoutId = setTimeout(function () {
                 flag = false
                 updateValue.apply(this, arguments)
             }, 500)
         } else {
             flag = true
-            timeoutId = setTimeout(() => {
+            timeoutId = setTimeout(function () {
                 flag = false
                 updateValue.apply(this, arguments)
             }, 500)
@@ -41,16 +43,22 @@ function updateValue() {
         clearInput()
     } else {
         getRepo(input.value)
-            .then(posts => posts.items)
-            .then(items => {
+            .then(function (posts) {
+                return posts.items
+            })
+            .then(function (items) {
                 if (items === undefined) {
 
-                }else{
+                } else {
                     return items
                 }
             })
-            .then(filterItems => updateDropDown(filterItems))
-            .catch(err => err)
+            .then(function (filterItems) {
+                updateDropDown(filterItems)
+            })
+            .catch(function (err) {
+                return err
+            })
     }
 }
 
@@ -63,7 +71,9 @@ function updateDropDown(items) {
         const item = document.createElement('div')
         item.classList.add('main__item-dropdown')
         item.insertAdjacentHTML('afterbegin', `<span>${rep.name}</span>`)
-        item.addEventListener('click', (e) => createEl(rep.name, rep.owner.login, rep.stargazers_count))
+        item.addEventListener('click', function () {
+            createEl(rep.name, rep.owner.login, rep.stargazers_count)
+        })
         fragment.appendChild(item)
     }
     input.after(fragment)
@@ -79,7 +89,11 @@ function createEl(name, owner, stars) {
     item.insertAdjacentHTML('beforeend', `<span>Stars: ${stars}</span>`)
     const btn = document.createElement('button')
     btn.textContent = 'Удалить'
-    btn.addEventListener('click', () => item.remove())
+    function listen() {
+        item.removeEventListener('click', listen)
+        item.remove()
+    }
+    btn.addEventListener('click', listen)
 
     item.insertAdjacentElement('beforeend', btn)
 
